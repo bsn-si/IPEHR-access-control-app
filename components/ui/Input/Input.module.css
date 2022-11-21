@@ -1,0 +1,37 @@
+.container {
+  height: 46px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 0 16px;
+}
+
+.native {
+  outline: 0 !important;
+  border: none;
+  padding-top: 21px;
+  padding-bottom: 8px;
+  width: 100%;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  margin-right: 16px;
+}
+
+.native:focus + .label {
+  transform: translateY(-40%) scale(0.75);
+}
+
+.hasValue + .label {
+  transform: translateY(-40%) scale(0.75);
+}
+
+.label {
+  color: rgba(0, 0, 0, 0.3);
+  top: 11px;
+  font-size: 14px;
+  transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1),
+    right 0.324s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}

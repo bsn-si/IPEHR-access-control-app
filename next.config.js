@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-}
+  env: {
+    externalApiUrl: "https://gateway.ipehr.org/v1/",
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

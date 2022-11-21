@@ -1,0 +1,55 @@
+.header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 64px;
+}
+
+.header-nav a {
+  font-weight: 500;
+  font-size: 14px;
+  color: black;
+  margin-left: 32px;
+}
+
+.add-doctor {
+  width: 302px;
+  height: 220px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.content {
+  padding: 0 80px;
+}
+
+.dialog-content {
+  padding: 78px 0;
+}
+
+.dialog-header {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.dialog-text {
+  color: rgba(0, 0, 0, 0.3);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 24px;
+  margin-top: 0;
+  width: 325px;
+  text-align: center;
+}
+
+.dialog-text + label {
+  margin-bottom: 24px;
+  width: 327px;
+}
+
+.dialog-text + label + button {
+  width: 327px;
+}
