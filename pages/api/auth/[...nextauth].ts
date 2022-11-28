@@ -25,7 +25,6 @@ export const options: NextAuthOptions = {
 
         // If no error and we have user data, return it
         if (res.ok && user) {
-          console.log("RETURNING USER");
           return { ...user, name: credentials?.userID, email: "", image: "" };
         }
         // Return null if user data could not be retrieved
@@ -50,7 +49,6 @@ export const options: NextAuthOptions = {
       return token;
     },
     async session({ session, token, user }) {
-      console.log(user, token);
       session.user = { name: token.name, email: "", image: "" };
       return session;
     },

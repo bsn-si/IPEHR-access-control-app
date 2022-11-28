@@ -20,6 +20,13 @@
 
 .content {
   padding: 0 80px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.content > div {
+  margin-right: 24px;
+  margin-bottom: 26px;
 }
 
 .dialog-content {
@@ -52,4 +59,60 @@
 
 .dialog-text + label + button {
   width: 327px;
+}
+
+.doctorImage {
+  width: 295px;
+  height: 368px;
+  border-radius: 8px;
+  background-image: url("https://via.placeholder.com/295x368.png");
+}
+
+.doctorSubTitle {
+  font-weight: 400;
+  font-size: 12px;
+  color: #6248f7;
+  margin-bottom: 32px;
+  margin-top: -8px;
+}
+
+.doctorInfo {
+  width: 327px;
+  margin-left: 32px;
+}
+
+.doctorText {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+.doctorText + span {
+  margin-bottom: 32px;
+}
+
+.doctorPreview {
+  height: 132px;
+  width: 270px;
+  background-image: url("https://via.placeholder.com/270x132.png");
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+
+.doctorCard {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 302px;
+  height: 220px;
+  padding: 16px;
+  cursor: pointer;
+}
+
+.doctorCardHeader {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.doctorCard .doctorSubTitle {
+  margin-bottom: 0;
 }
