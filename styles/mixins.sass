@@ -1,0 +1,70 @@
+=abs($top, $right, $bottom, $left)
+  position: absolute 
+  bottom: $bottom
+  right: $right
+  left: $left
+  top: $top
+
+=font-face($name, $type, $weight)
+    @font-face
+        src: url("./fonts/#{$name}-#{$type}.woff2") format("woff2")
+        font-family: "#{$name}"
+        font-weight: $weight
+        font-display: swap
+
+=screen($size)
+    $large: "(min-width: 1921px)"
+    $laptop: "(min-width: 1025px) and (max-height: 900px)"
+    $desktop: "(min-width: 1025px)"
+    $tablet: "(max-width: 1024px)"
+    $mobile: "(max-width: 767px)"
+  
+    @if $size == large
+        @media only screen and #{$large}
+            @content
+    @else if $size == laptop
+      @media only screen and #{$laptop}
+        @content
+    @else if $size == desktop
+        @media only screen and #{$desktop}
+            @content
+    @else if $size == tablet
+        @media only screen and #{$tablet}
+            @content
+    @else if $size == mobile
+        @media only screen and #{$mobile}
+            @content
+    @else
+        @media only screen and #{$size}
+            @content
+
+=flex($direction: "row", $justify: null, $align: null)
+  flex-direction: #{$direction}
+  display: flex
+
+  @if $justify != null
+    justify-content: #{$justify}
+  @if $align != null
+    align-items: #{$align}
+
+=button()
+  transition: all 0.25s ease
+  user-select: none
+  cursor: pointer
+  outline: nine
+
+=box($width, $height: $width)
+  height: $height
+  width: $width
+
+@function color($color-name)
+    @return var(--color-#{$color-name})
+
+@function font-size($font-size)
+    @return var(--font-size-#{$font-size})
+
+@function line-height($font-size)
+    @return var(--line-height-#{$font-size})
+
+@function font-weight($font-size)
+    @return var(--font-weight-#{$font-size})

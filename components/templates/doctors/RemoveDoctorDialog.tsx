@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import Button from "../../ui/Button";
 import { Dialog } from "../../ui/Dialog/Dialog";
-import styles from "../../../styles/Doctors.module.css";
+import styles from "../../../styles/Doctors.module.scss";
 
 const AddDoctorDialog: FC<{
   doctor: any;

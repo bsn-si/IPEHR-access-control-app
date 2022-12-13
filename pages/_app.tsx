@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import { SessionProvider, useSession, signIn } from "next-auth/react";
 import type { Session } from "next-auth";
 
-import "../styles/globals.css";
+import "../styles/globals.scss";
 
 export default function App({
   Component,

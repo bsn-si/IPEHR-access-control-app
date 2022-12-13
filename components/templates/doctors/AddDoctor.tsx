@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import AddIcon from "../../icons/AddIcon";
-import styles from "../../../styles/Doctors.module.css";
+import styles from "../../../styles/Doctors.module.scss";
 
 const AddDoctor: FC<{ onClick: () => void }> = ({ onClick }) => {
   return (

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import styles from "../../../styles/Doctors.module.css";
+import styles from "../../../styles/Doctors.module.scss";
 
 interface DoctorCardProps {
   name: string;

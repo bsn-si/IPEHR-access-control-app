@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import styles from "../../../styles/Documents.module.css";
+import styles from "../../../styles/Documents.module.scss";
 import Document from "../../icons/Document";
 
 const DocumentCard: FC<{ doc: any; onClick: () => void }> = ({
