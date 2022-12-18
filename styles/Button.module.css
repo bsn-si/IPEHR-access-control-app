@@ -6,6 +6,9 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button:hover {

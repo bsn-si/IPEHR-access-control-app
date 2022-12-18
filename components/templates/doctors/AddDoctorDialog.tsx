@@ -1,9 +1,18 @@
 import React, { FC, useState, useEffect } from "react";
 import Button from "../../ui/Button";
 import { Dialog } from "../../ui/Dialog/Dialog";
-import Input from "../../ui/Input/Input";
 import styles from "../../../styles/Doctors.module.scss";
 import useIsMobile from "../../../hooks/useIsMobile";
+import PinInput from "../../ui/PinInput/PinInput";
+
+interface DoctorInfo {
+  address: string;
+  code: string;
+  description: string;
+  name: string;
+  pictureURL: string;
+  role: string;
+}
 
 const AddDoctorDialog: FC<{
   onClose: () => void;
@@ -13,6 +22,10 @@ const AddDoctorDialog: FC<{
   const [step, setStep] = useState(1);
   const { isMobile } = useIsMobile();
   const [mobile, setMobile] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState("");
+  const [doctorInfo, setDoctorInfo] = useState<DoctorInfo>();
 
   useEffect(() => {
     setMobile(isMobile());
@@ -22,6 +35,23 @@ const AddDoctorDialog: FC<{
     onChangeStep("Scan QR Code");
   }, []);
 
+  const getDoctorInfo = async () => {
+    setLoading(true);
+    setError("");
+    const res = await fetch(process.env.externalApiUrl + `user/code/${pin}`, {
+      method: "GET",
+    });
+
+    if (res.status === 404) {
+      setError("Doctor not found");
+    }
+    if (res.status === 200) {
+      setDoctorInfo(await res.json());
+      setStep(2);
+    }
+    setLoading(false);
+  };
+
   const desktopStep1 = (
     <div
       className={`flex column justify-center align-center ${styles["dialog-content"]}`}
@@ -30,8 +60,15 @@ const AddDoctorDialog: FC<{
       <p className={styles["dialog-text"]}>
         To add a new doctor please enter Doctor code and confirm addition.
       </p>
-      <Input label="PIN" />
-      <Button label="ADD DOCTOR" onClick={() => setStep(2)} />
+      <div>
+        <PinInput onChange={(value: string) => setPin(value)} />
+        {error && <span className={styles.error}>{error}</span>}
+      </div>
+      <Button
+        label="ADD DOCTOR"
+        onClick={() => getDoctorInfo()}
+        loading={loading}
+      />
     </div>
   );
 
@@ -52,15 +89,10 @@ const AddDoctorDialog: FC<{
         <div className={`flex`}>
           <div className={styles.doctorImage} />
           <div className={`flex column justify-center ${styles.doctorInfo}`}>
-            <h4 className={styles["dialog-header"]}>Dr. Agnes Jones</h4>
-            <span className={styles.doctorSubTitle}>
-              Cleveland Clinic, 33 Grosvenor Pl, London
-            </span>
-            <p className={styles.doctorText}>
-              Primary clinical interests are Thyroid Cancer, Thyroid Nodules,
-              Thyroid Goitres, Primary Hyperparathyroidism, Adrenal Tumours
-            </p>
-            <span>Speaks English, Chinese</span>
+            <h4 className={styles["dialog-header"]}>{doctorInfo?.name}</h4>
+            <span className={styles.doctorSubTitle}>{doctorInfo?.address}</span>
+            <p className={styles.doctorText}>{doctorInfo?.description}</p>
+            {/* <span>Speaks English, Chinese</span> */}
             <Button
               label="ADD DOCTOR"
               onClick={() =>
