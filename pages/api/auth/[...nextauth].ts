@@ -17,7 +17,7 @@ export const options: NextAuthOptions = {
           headers: {
             "Content-Type": "application/json",
             AuthUserId: credentials?.userID || "",
-            EhrSystemId: credentials?.userID || "",
+            // EhrSystemId: credentials?.userID || "",
           },
         });
         const user = await res.json();
