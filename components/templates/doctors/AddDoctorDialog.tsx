@@ -4,6 +4,7 @@ import { Dialog } from "../../ui/Dialog/Dialog";
 import styles from "../../../styles/Doctors.module.scss";
 import useIsMobile from "../../../hooks/useIsMobile";
 import PinInput from "../../ui/PinInput/PinInput";
+import { useSession } from "next-auth/react";
 
 interface DoctorInfo {
   address: string;
@@ -12,6 +13,7 @@ interface DoctorInfo {
   name: string;
   pictureURL: string;
   role: string;
+  userID: string;
 }
 
 const AddDoctorDialog: FC<{
@@ -27,6 +29,10 @@ const AddDoctorDialog: FC<{
   const [error, setError] = useState("");
   const [doctorInfo, setDoctorInfo] = useState<DoctorInfo>();
 
+  const { data: session, status } = useSession();
+
+  //console.log(session, status);
+
   useEffect(() => {
     setMobile(isMobile());
   }, [isMobile]);
@@ -38,18 +44,67 @@ const AddDoctorDialog: FC<{
   const getDoctorInfo = async () => {
     setLoading(true);
     setError("");
-    const res = await fetch(process.env.externalApiUrl + `user/code/${pin}`, {
-      method: "GET",
-    });
+    const res = await fetch(
+      process.env.externalApiUrl + `user/code/${pin.replace("-", "")}`,
+      {
+        method: "GET",
+      }
+    );
 
     if (res.status === 404) {
       setError("Doctor not found");
     }
     if (res.status === 200) {
       setDoctorInfo(await res.json());
+      // console.log(await res.json());
       setStep(2);
     }
     setLoading(false);
+  };
+
+  const addDoctor = async () => {
+    setLoading(true);
+    setError("");
+    const getGroupsReq = await fetch(
+      process.env.externalApiUrl + `user/group`,
+      {
+        headers: {
+          Authorization: `Bearer ${(session as any).accessToken}`,
+          AuthUserId: session?.user?.name || "",
+        },
+      }
+    );
+
+    if (getGroupsReq.ok) {
+      const groups = await getGroupsReq.json();
+      const doctorsGroup = groups.find(
+        (group: any) => group.name === "doctors"
+      );
+      if (doctorsGroup && doctorInfo) {
+        const addDoctorReq = await fetch(
+          process.env.externalApiUrl +
+            `user/group/${doctorsGroup.groupID}/user_add/${doctorInfo.userID}/read`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${(session as any).accessToken}`,
+              AuthUserId: session?.user?.name || "",
+            },
+          }
+        );
+        if (addDoctorReq.ok) {
+          setLoading(false);
+          onClose();
+        }
+        if (addDoctorReq.status === 409) {
+          setError("The user is already a member of a group");
+          setLoading(false);
+        }
+      }
+    } else {
+      setError("Error occured while getting user groups");
+      setLoading(false);
+    }
   };
 
   const desktopStep1 = (
@@ -95,16 +150,10 @@ const AddDoctorDialog: FC<{
             {/* <span>Speaks English, Chinese</span> */}
             <Button
               label="ADD DOCTOR"
-              onClick={() =>
-                onSuccess({
-                  name: "Dr. Jones",
-                  address: "Cleveland Clinic, 33 Grosvenor Pl, London",
-                  description: `Primary clinical interests are Thyroid Cancer, Thyroid Nodules,
-                  Thyroid Goitres, Primary Hyperparathyroidism, Adrenal Tumours`,
-                  languages: ["English", "Chinese"],
-                })
-              }
+              onClick={() => addDoctor()}
+              loading={loading}
             />
+            {error && <span className={styles.error}>{error}</span>}
           </div>
         </div>
       )}
