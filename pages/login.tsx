@@ -19,9 +19,11 @@ export default function Login() {
   const [userID, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const performLogin = async () => {
+    setLoading(true);
     setError(false);
     const res = await signIn("credentials", {
       redirect: false,
@@ -29,8 +31,10 @@ export default function Login() {
       password: password,
     });
     if (res?.ok) {
+      setLoading(false);
       router.push("/doctors");
     } else {
+      setLoading(false);
       setError(true);
     }
   };
@@ -69,7 +73,7 @@ export default function Login() {
             </div>
           )}
           <div className="flex justify-center">
-            <Button label="SIGN IN" onClick={performLogin} />
+            <Button label="SIGN IN" onClick={performLogin} loading={loading} />
           </div>
         </div>
       </div>

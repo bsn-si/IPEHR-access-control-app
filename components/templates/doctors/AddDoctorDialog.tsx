@@ -5,33 +5,33 @@ import styles from "../../../styles/Doctors.module.scss";
 import useIsMobile from "../../../hooks/useIsMobile";
 import PinInput from "../../ui/PinInput/PinInput";
 import { useSession } from "next-auth/react";
+import { User } from "../../../models/User";
+import { UserGroup } from "../../../models/UserGroup";
+import { GetUserByCode } from "../../../requests/User";
+import { AddUserToGroup } from "../../../requests/UserGroup";
 
-interface DoctorInfo {
-  address: string;
-  code: string;
-  description: string;
-  name: string;
-  pictureURL: string;
-  role: string;
-  userID: string;
+interface AddDoctorProps {
+  doctorsGroup: UserGroup;
+  onClose: () => void;
+  onSuccess: (doctor: User) => void;
+  onChangeStep: (step: string) => void;
 }
 
-const AddDoctorDialog: FC<{
-  onClose: () => void;
-  onSuccess: (doctor: any) => void;
-  onChangeStep: (step: string) => void;
-}> = ({ onClose, onSuccess, onChangeStep }) => {
+const AddDoctorDialog: FC<AddDoctorProps> = ({
+  doctorsGroup,
+  onClose,
+  onSuccess,
+  onChangeStep,
+}) => {
   const [step, setStep] = useState(1);
   const { isMobile } = useIsMobile();
   const [mobile, setMobile] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
-  const [doctorInfo, setDoctorInfo] = useState<DoctorInfo>();
+  const [doctorInfo, setDoctorInfo] = useState<User>();
 
   const { data: session, status } = useSession();
-
-  //console.log(session, status);
 
   useEffect(() => {
     setMobile(isMobile());
@@ -44,19 +44,12 @@ const AddDoctorDialog: FC<{
   const getDoctorInfo = async () => {
     setLoading(true);
     setError("");
-    const res = await fetch(
-      process.env.externalApiUrl + `user/code/${pin.replace("-", "")}`,
-      {
-        method: "GET",
-      }
-    );
+    const user = await GetUserByCode(pin.replace("-", ""));
 
-    if (res.status === 404) {
+    if (!user) {
       setError("Doctor not found");
-    }
-    if (res.status === 200) {
-      setDoctorInfo(await res.json());
-      // console.log(await res.json());
+    } else {
+      setDoctorInfo(user);
       setStep(2);
     }
     setLoading(false);
@@ -65,45 +58,22 @@ const AddDoctorDialog: FC<{
   const addDoctor = async () => {
     setLoading(true);
     setError("");
-    const getGroupsReq = await fetch(
-      process.env.externalApiUrl + `user/group`,
-      {
-        headers: {
-          Authorization: `Bearer ${(session as any).accessToken}`,
-          AuthUserId: session?.user?.name || "",
-        },
-      }
-    );
 
-    if (getGroupsReq.ok) {
-      const groups = await getGroupsReq.json();
-      const doctorsGroup = groups.find(
-        (group: any) => group.name === "doctors"
+    if (session?.user?.name && doctorInfo?.userID) {
+      const addResponse = await AddUserToGroup(
+        (session as any).accessToken,
+        session?.user?.name,
+        doctorsGroup.groupID,
+        doctorInfo?.userID
       );
-      if (doctorsGroup && doctorInfo) {
-        const addDoctorReq = await fetch(
-          process.env.externalApiUrl +
-            `user/group/${doctorsGroup.groupID}/user_add/${doctorInfo.userID}/read`,
-          {
-            method: "PUT",
-            headers: {
-              Authorization: `Bearer ${(session as any).accessToken}`,
-              AuthUserId: session?.user?.name || "",
-            },
-          }
-        );
-        if (addDoctorReq.ok) {
-          setLoading(false);
-          onClose();
-        }
-        if (addDoctorReq.status === 409) {
-          setError("The user is already a member of a group");
-          setLoading(false);
-        }
+      if (addResponse.ok) {
+        setLoading(false);
+        onSuccess(doctorInfo);
       }
-    } else {
-      setError("Error occured while getting user groups");
-      setLoading(false);
+      if (addResponse.status === 409) {
+        setError("The user is already a member of a group");
+        setLoading(false);
+      }
     }
   };
 

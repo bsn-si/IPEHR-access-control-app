@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCsrfToken } from "next-auth/react";
+import { getCsrfToken, useSession } from "next-auth/react";
 import { options } from "./api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth/next";
 import styles from "../styles/Doctors.module.scss";
@@ -10,6 +10,9 @@ import DoctorCard from "../components/templates/doctors/DoctorCard";
 import useIsMobile from "../hooks/useIsMobile";
 import MobileNav from "../components/templates/nav/MobileNav";
 import Header from "../components/Header/Header";
+import { GetUserGroups } from "../requests/UserGroup";
+import { UserGroup } from "../models/UserGroup";
+import { User } from "../models/User";
 
 export async function getServerSideProps(context: any) {
   const session = await unstable_getServerSession(
@@ -37,39 +40,57 @@ export default function Doctors() {
   const [addModal, setAddModal] = useState(false);
   const [removeModal, setRemoveModal] = useState(false);
   const [doctors, setDoctors] = useState<any[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<User>();
   const { isMobile } = useIsMobile();
   const [mobile, setMobile] = useState(false);
   const [docStep, setDocStep] = useState<string>("");
+  const [userGroups, setUserGroups] = useState<UserGroup[]>();
+  const [doctorsGroup, setDoctorsGroup] = useState<UserGroup>();
+
+  const { data: session, status } = useSession();
+
+  const getGroups = () => {
+    GetUserGroups(session?.user?.name || "", (session as any).accessToken).then(
+      (groups) => setUserGroups(groups)
+    );
+  };
+
+  useEffect(() => {
+    getGroups();
+  }, []);
+
+  useEffect(() => {
+    userGroups?.find((group) => {
+      if (group.name === "doctors") setDoctorsGroup(group);
+    });
+  }, [userGroups]);
 
   useEffect(() => {
     setMobile(isMobile());
   }, [isMobile]);
 
-  const addDoctor = (doctor: any) => {
-    let newDoctors = doctors.slice();
-    newDoctors.push({ ...doctor, id: doctors.length + 1 });
-    setDoctors(newDoctors);
-    setAddModal(false);
-  };
-
-  const selectDoctor = (doctor: any) => {
+  const selectDoctor = (doctor: User) => {
     setSelectedDoctor(doctor);
     setRemoveModal(true);
   };
 
-  const removeDoctor = (doctor: any) => {
-    const fIndex = doctors.findIndex((doc) => doc.id === doctor.id);
-    if (fIndex !== -1) {
-      const newDoctors = doctors.slice();
-      newDoctors.splice(fIndex, 1);
-      setDoctors(newDoctors);
-    }
-    setRemoveModal(false);
-  };
-
   const handleBack = () => {
     setDocStep("");
+    setAddModal(false);
+  };
+
+  const handleRemoved = () => {
+    setRemoveModal(false);
+    getGroups();
+  };
+
+  const handleAdded = (doctor: User) => {
+    if (doctorsGroup) {
+      const newDocGroup: UserGroup = { ...doctorsGroup };
+      newDocGroup.members?.push(doctor.userID);
+      setDoctorsGroup(newDocGroup);
+    }
+
     setAddModal(false);
   };
   return (
@@ -81,31 +102,35 @@ export default function Doctors() {
         onBackBtnClick={handleBack}
       />
       <div className={styles.content}>
-        {doctors.map((doctor) => (
+        {doctorsGroup?.members.map((doctor) => (
           <DoctorCard
-            name={doctor.name}
-            address={doctor.address}
-            key={doctor.id}
-            onClick={() => selectDoctor(doctor)}
+            userId={doctor}
+            key={doctor}
+            onClick={(user) => selectDoctor(user)}
           />
         ))}
         {!mobile && <AddDoctor onClick={() => setAddModal(true)} />}
-        {doctors.length < 1 && mobile && !addModal && (
-          <span>{'Click on the "plus" to add a doctor.'}</span>
-        )}
+        {doctorsGroup &&
+          doctorsGroup?.members?.length < 1 &&
+          mobile &&
+          !addModal && <span>{'Click on the "plus" to add a doctor.'}</span>}
       </div>
-      {addModal && (
+      {addModal && doctorsGroup && (
         <AddDoctorDialog
           onClose={() => setAddModal(false)}
-          onSuccess={(doctor) => addDoctor(doctor)}
+          onSuccess={(doctor) => handleAdded(doctor)}
           onChangeStep={(step: string) => setDocStep(step)}
+          doctorsGroup={doctorsGroup}
         />
       )}
-      {removeModal && (
+      {removeModal && doctorsGroup && selectedDoctor && (
         <RemoveDoctorDialog
           onClose={() => setRemoveModal(false)}
           doctor={selectedDoctor}
-          onSuccess={(doctor) => removeDoctor(doctor)}
+          onSuccess={() => handleRemoved()}
+          groupId={doctorsGroup.groupID}
+          accessToken={(session as any).accessToken}
+          userId={session?.user?.name || ""}
         />
       )}
       {mobile && <MobileNav />}
