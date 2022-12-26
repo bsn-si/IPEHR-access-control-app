@@ -39,7 +39,6 @@ export async function getServerSideProps(context: any) {
 export default function Doctors() {
   const [addModal, setAddModal] = useState(false);
   const [removeModal, setRemoveModal] = useState(false);
-  const [doctors, setDoctors] = useState<any[]>([]);
   const [selectedDoctor, setSelectedDoctor] = useState<User>();
   const { isMobile } = useIsMobile();
   const [mobile, setMobile] = useState(false);
@@ -70,6 +69,7 @@ export default function Doctors() {
   }, [isMobile]);
 
   const selectDoctor = (doctor: User) => {
+    setDocStep("Doctor Info");
     setSelectedDoctor(doctor);
     setRemoveModal(true);
   };
@@ -77,9 +77,20 @@ export default function Doctors() {
   const handleBack = () => {
     setDocStep("");
     setAddModal(false);
+    setRemoveModal(false);
   };
 
-  const handleRemoved = () => {
+  const handleRemoved = (doctor: User) => {
+    if (doctorsGroup) {
+      const newDocGroup: UserGroup = { ...doctorsGroup };
+      const foundIndex = newDocGroup.members.findIndex(
+        (doc) => doc === doctor.userID
+      );
+      if (foundIndex > -1) {
+        newDocGroup.members.splice(foundIndex, 1);
+      }
+      setDoctorsGroup(newDocGroup);
+    }
     setRemoveModal(false);
     getGroups();
   };
@@ -101,7 +112,14 @@ export default function Doctors() {
         showBackBtn={docStep.length > 0}
         onBackBtnClick={handleBack}
       />
-      <div className={styles.content}>
+      <div
+        className={
+          styles.content +
+          (doctorsGroup && doctorsGroup?.members.length < 1
+            ? " " + styles.contentEmpty
+            : "")
+        }
+      >
         {doctorsGroup?.members.map((doctor) => (
           <DoctorCard
             userId={doctor}
@@ -127,7 +145,7 @@ export default function Doctors() {
         <RemoveDoctorDialog
           onClose={() => setRemoveModal(false)}
           doctor={selectedDoctor}
-          onSuccess={() => handleRemoved()}
+          onSuccess={(doctor) => handleRemoved(doctor)}
           groupId={doctorsGroup.groupID}
           accessToken={(session as any).accessToken}
           userId={session?.user?.name || ""}

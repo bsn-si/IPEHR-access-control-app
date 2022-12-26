@@ -21,12 +21,14 @@ const DoctorCard: FC<DoctorCardProps> = ({ userId, onClick }) => {
     <>
       {user && (
         <div
-          className={`flex column justify-center ${styles.doctorCard}`}
+          className={styles.doctorCard}
           onClick={() => (user ? onClick(user) : null)}
         >
           <div className={styles.doctorPreview} />
-          <div className={styles.doctorCardHeader}>{user?.name}</div>
-          <span className={styles.doctorSubTitle}>{user?.address}</span>
+          <div>
+            <div className={styles.doctorCardHeader}>{user?.name}</div>
+            <span className={styles.doctorSubTitle}>{user?.address}</span>
+          </div>
         </div>
       )}
       {!user && (
