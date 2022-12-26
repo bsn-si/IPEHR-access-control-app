@@ -45,7 +45,9 @@
 }
 
 .contentEmpty {
-  justify-content: center !important;
+  @include screen(mobile) {
+    justify-content: center !important;
+  }
 }
 
 .content > div {

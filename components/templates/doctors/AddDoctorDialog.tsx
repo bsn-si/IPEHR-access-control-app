@@ -111,9 +111,11 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
     <Dialog onClose={onClose}>
       {step === 1 && desktopStep1}
       {step === 2 && (
-        <div className={`flex`}>
+        <div className={styles.doctorInfo}>
           <div className={styles.doctorImage} />
-          <div className={`flex column justify-center ${styles.doctorInfo}`}>
+          <div
+            className={`flex column justify-center ${styles.doctorInfoText}`}
+          >
             <h4 className={styles["dialog-header"]}>{doctorInfo?.name}</h4>
             <span className={styles.doctorSubTitle}>{doctorInfo?.address}</span>
             <p className={styles.doctorText}>{doctorInfo?.description}</p>
