@@ -5,4 +5,4 @@ COPY package*.json ./
 RUN yarn --check-files
 COPY . .
 #RUN yarn dev
-CMD ["yarn", "dev"]
+CMD ["yarn", "start"]

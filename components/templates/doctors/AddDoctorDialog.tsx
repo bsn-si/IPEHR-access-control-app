@@ -38,20 +38,20 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
     setMobile(isMobile());
 
     if (isMobile() && step === 1) {
-      // Html5Qrcode.getCameras()
-      //   .then((devices) => {
-      //     /**
-      //      * devices would be an array of objects of type:
-      //      * { id: "id", label: "label" }
-      //      */
-      //     if (devices && devices.length) {
-      //       var cameraId = devices[0].id;
-      //       // .. use this to start scanning.
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     console.log(err);
-      //   });
+      Html5Qrcode.getCameras()
+        .then((devices) => {
+          /**
+           * devices would be an array of objects of type:
+           * { id: "id", label: "label" }
+           */
+          if (devices && devices.length) {
+            var cameraId = devices[0].id;
+            // .. use this to start scanning.
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       console.log(navigator.mediaDevices?.getUserMedia({ video: true }));
     }
   }, [isMobile]);
