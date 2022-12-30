@@ -9,10 +9,13 @@ export const GetUserGroups = async (
     headers: {
       Authorization: `Bearer ${accessToken}`,
       AuthUserId: userId,
+      EhrSystemId: userId,
     },
   });
   if (getGroupsReq.ok) {
     userGroups = await getGroupsReq.json();
+  } else if (getGroupsReq.status === 403) {
+    window.location.replace("/login");
   }
   return userGroups;
 };

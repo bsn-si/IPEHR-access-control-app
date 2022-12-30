@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, use } from "react";
 import Button from "../../ui/Button";
 import { Dialog } from "../../ui/Dialog/Dialog";
 import styles from "../../../styles/Doctors.module.scss";
@@ -9,6 +9,7 @@ import { User } from "../../../models/User";
 import { UserGroup } from "../../../models/UserGroup";
 import { GetUserByCode } from "../../../requests/User";
 import { AddUserToGroup } from "../../../requests/UserGroup";
+import { Html5Qrcode } from "html5-qrcode";
 
 interface AddDoctorProps {
   doctorsGroup: UserGroup;
@@ -35,10 +36,44 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
 
   useEffect(() => {
     setMobile(isMobile());
+
+    if (isMobile() && step === 1) {
+      // Html5Qrcode.getCameras()
+      //   .then((devices) => {
+      //     /**
+      //      * devices would be an array of objects of type:
+      //      * { id: "id", label: "label" }
+      //      */
+      //     if (devices && devices.length) {
+      //       var cameraId = devices[0].id;
+      //       // .. use this to start scanning.
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   });
+      console.log(navigator.mediaDevices?.getUserMedia({ video: true }));
+    }
   }, [isMobile]);
 
   useEffect(() => {
     onChangeStep("Scan QR Code");
+
+    // Html5Qrcode.getCameras()
+    //   .then((devices) => {
+    //     /**
+    //      * devices would be an array of objects of type:
+    //      * { id: "id", label: "label" }
+    //      */
+    //     console.log(devices);
+    //     if (devices && devices.length) {
+    //       var cameraId = devices[0].id;
+    //       // .. use this to start scanning.
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }, []);
 
   const getDoctorInfo = async () => {
@@ -74,6 +109,9 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
         setError("The user is already a member of a group");
         setLoading(false);
       }
+    } else {
+      console.log("session not found", session, doctorInfo);
+      setLoading(false);
     }
   };
 

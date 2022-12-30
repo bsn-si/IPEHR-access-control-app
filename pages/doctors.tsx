@@ -30,7 +30,7 @@ export async function getServerSideProps(context: any) {
   }
   return {
     props: {
-      csrfToken: await getCsrfToken(context),
+      // csrfToken: await getCsrfToken(context),
       session,
     },
   };
@@ -55,8 +55,10 @@ export default function Doctors() {
   };
 
   useEffect(() => {
-    getGroups();
-  }, []);
+    if ((session as any)?.accessToken) {
+      getGroups();
+    }
+  }, [session]);
 
   useEffect(() => {
     userGroups?.find((group) => {
