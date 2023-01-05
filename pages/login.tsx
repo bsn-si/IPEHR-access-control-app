@@ -52,29 +52,35 @@ export default function Login() {
           <div className="flex justify-center mt-xl">
             <h3>Welcome!</h3>
           </div>
-          <div className="flex justify-center mt-md">
-            <Input
-              onInput={(value) => setLogin(value)}
-              label="Login"
-              icon="LoginIcon"
-            />
-          </div>
-          <div className="flex justify-center mt-md mb-xl">
-            <Input
-              onInput={(value) => setPassword(value)}
-              label="Password"
-              icon="Lock"
-              type="password"
-            />
-          </div>
-          {error && (
-            <div className={`flex justify-center ${styles.error}`}>
-              <span>Invalid credentials</span>
+          <form onSubmit={(e: any) => e.preventDefault()}>
+            <div className="flex justify-center mt-md">
+              <Input
+                onInput={(value) => setLogin(value)}
+                label="Login"
+                icon="LoginIcon"
+              />
             </div>
-          )}
-          <div className="flex justify-center">
-            <Button label="SIGN IN" onClick={performLogin} loading={loading} />
-          </div>
+            <div className="flex justify-center mt-md mb-xl">
+              <Input
+                onInput={(value) => setPassword(value)}
+                label="Password"
+                icon="Lock"
+                type="password"
+              />
+            </div>
+            {error && (
+              <div className={`flex justify-center ${styles.error}`}>
+                <span>Invalid credentials</span>
+              </div>
+            )}
+            <div className="flex justify-center">
+              <Button
+                label="SIGN IN"
+                onClick={performLogin}
+                loading={loading}
+              />
+            </div>
+          </form>
         </div>
       </div>
     </>

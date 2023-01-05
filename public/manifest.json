@@ -1,0 +1,16 @@
+{
+  "name": "IPEHR App",
+  "short_name": "IPEHR",
+  "icons": [
+    {
+      "src": "ipehr-icon.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}
