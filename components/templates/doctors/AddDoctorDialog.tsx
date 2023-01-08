@@ -37,43 +37,24 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
   useEffect(() => {
     setMobile(isMobile());
 
-    if (isMobile() && step === 1) {
-      Html5Qrcode.getCameras()
-        .then((devices) => {
-          /**
-           * devices would be an array of objects of type:
-           * { id: "id", label: "label" }
-           */
-          if (devices && devices.length) {
-            var cameraId = devices[0].id;
-            // .. use this to start scanning.
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      console.log(navigator.mediaDevices?.getUserMedia({ video: true }));
-    }
+    const reader = new Html5Qrcode("qr-reader");
+    const config = { fps: 10, qrbox: { width: 327, height: 327 } };
+    const qrCodeSuccessCallback = (decodedText: string, decodedResult: any) => {
+      /* handle success */
+    };
+    const qrCodeFailCallback = (error: string) => {
+      console.log("error");
+    };
+    reader.start(
+      { facingMode: "environment" },
+      config,
+      qrCodeSuccessCallback,
+      qrCodeFailCallback
+    );
   }, [isMobile]);
 
   useEffect(() => {
     onChangeStep("Scan QR Code");
-
-    // Html5Qrcode.getCameras()
-    //   .then((devices) => {
-    //     /**
-    //      * devices would be an array of objects of type:
-    //      * { id: "id", label: "label" }
-    //      */
-    //     console.log(devices);
-    //     if (devices && devices.length) {
-    //       var cameraId = devices[0].id;
-    //       // .. use this to start scanning.
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }, []);
 
   const getDoctorInfo = async () => {
@@ -137,7 +118,7 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
 
   const mobileStep1 = (
     <div>
-      <div className={styles.qrcontainer} />
+      <div className={styles.qrcontainer} id="qr-reader" />
       <div>
         <span className="text-gray font-w500 text-center">
           To add a new doctor please scan QR code and confirm addition.

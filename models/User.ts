@@ -6,4 +6,5 @@ export interface User {
   pictureURL: string;
   role: string;
   userID: string;
+  ehrID: string;
 }

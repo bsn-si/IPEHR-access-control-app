@@ -11,7 +11,7 @@ async function refreshAccessToken(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        AuthUserId: userId,
+        // AuthUserId: userId,
         Authorization: `Bearer ${token}`,
       },
     });
@@ -46,16 +46,18 @@ export const options: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        console.log("AUTH CALLED");
         const res = await fetch(process.env.externalApiUrl + "user/login", {
           method: "POST",
           body: JSON.stringify(credentials),
           headers: {
             "Content-Type": "application/json",
             AuthUserId: credentials?.userID || "",
-            EhrSystemId: credentials?.userID || "",
+            // EhrSystemId: credentials?.userID || "",
           },
         });
         const user = await res.json();
+        console.log("111", res);
         console.log(user);
 
         // If no error and we have user data, return it

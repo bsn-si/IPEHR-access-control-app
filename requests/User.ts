@@ -8,9 +8,17 @@ export const GetUserByCode = async (code: string): Promise<User | null> => {
   else return null;
 };
 
-export const GetUser = async (userId: string): Promise<User | null> => {
+export const GetUser = async (
+  userId: string,
+  accessToken: string,
+  currentUserId: string
+): Promise<User | null> => {
   const res = await fetch(process.env.externalApiUrl + `user/${userId}`, {
     method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      AuthUserId: currentUserId,
+    },
   });
   if (res.ok && res.status === 200) return res.json();
   else return null;

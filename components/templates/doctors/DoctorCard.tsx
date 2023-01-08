@@ -7,14 +7,21 @@ import SpinnerGif from "../../../assets/images/spinner.gif";
 
 interface DoctorCardProps {
   userId: string;
+  currentUserId: string;
+  accessToken: string;
   onClick: (user: User) => void;
 }
 
-const DoctorCard: FC<DoctorCardProps> = ({ userId, onClick }) => {
+const DoctorCard: FC<DoctorCardProps> = ({
+  userId,
+  accessToken,
+  currentUserId,
+  onClick,
+}) => {
   const [user, setUser] = useState<User>();
   useEffect(() => {
-    GetUser(userId.replace(/\0/g, "")).then((user) =>
-      setUser(user || undefined)
+    GetUser(userId.replace(/\0/g, ""), accessToken, currentUserId).then(
+      (user) => setUser(user || undefined)
     );
   }, [userId]);
   return (
