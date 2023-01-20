@@ -9,7 +9,7 @@ export const GetUserGroups = async (
     headers: {
       Authorization: `Bearer ${accessToken}`,
       AuthUserId: userId,
-      EhrSystemId: userId,
+      // EhrSystemId: userId,
     },
   });
   if (getGroupsReq.ok) {

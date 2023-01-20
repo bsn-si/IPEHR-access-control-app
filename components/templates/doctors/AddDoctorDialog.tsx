@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, use } from "react";
+import React, { FC, useState, useEffect, use, useRef } from "react";
 import Button from "../../ui/Button";
 import { Dialog } from "../../ui/Dialog/Dialog";
 import styles from "../../../styles/Doctors.module.scss";
@@ -31,36 +31,43 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [doctorInfo, setDoctorInfo] = useState<User>();
+  const readerRef = useRef("");
 
   const { data: session, status } = useSession();
 
   useEffect(() => {
     setMobile(isMobile());
 
-    const reader = new Html5Qrcode("qr-reader");
-    const config = { fps: 10, qrbox: { width: 327, height: 327 } };
-    const qrCodeSuccessCallback = (decodedText: string, decodedResult: any) => {
-      /* handle success */
-    };
-    const qrCodeFailCallback = (error: string) => {
-      console.log("error");
-    };
-    reader.start(
-      { facingMode: "environment" },
-      config,
-      qrCodeSuccessCallback,
-      qrCodeFailCallback
-    );
+    if (mobile) {
+      const reader = new Html5Qrcode(readerRef.current);
+      const config = { fps: 10, qrbox: { width: 327, height: 327 } };
+      const qrCodeSuccessCallback = async (
+        decodedText: string,
+        decodedResult: any
+      ) => {
+        await getDoctorInfo(decodedResult);
+        await addDoctor();
+      };
+      const qrCodeFailCallback = (error: string) => {
+        console.log("error");
+      };
+      reader.start(
+        { facingMode: "environment" },
+        config,
+        qrCodeSuccessCallback,
+        qrCodeFailCallback
+      );
+    }
   }, [isMobile]);
 
   useEffect(() => {
     onChangeStep("Scan QR Code");
   }, []);
 
-  const getDoctorInfo = async () => {
+  const getDoctorInfo = async (_pin?: any) => {
     setLoading(true);
     setError("");
-    const user = await GetUserByCode(pin.replace("-", ""));
+    const user = await GetUserByCode(_pin ? _pin : pin.replace("-", ""));
 
     if (!user) {
       setError("Doctor not found");
@@ -118,7 +125,7 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
 
   const mobileStep1 = (
     <div>
-      <div className={styles.qrcontainer} id="qr-reader" />
+      <div className={styles.qrcontainer} ref={readerRef.current} />
       <div>
         <span className="text-gray font-w500 text-center">
           To add a new doctor please scan QR code and confirm addition.
