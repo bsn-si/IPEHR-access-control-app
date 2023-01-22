@@ -2,9 +2,11 @@ import React, { FC, useState, useEffect } from "react";
 import { Dialog } from "../../ui/Dialog/Dialog";
 import styles from "../../../styles/Documents.module.scss";
 import useIsMobile from "../../../hooks/useIsMobile";
+import { Composition } from "../../../models/Composition";
+import { formatDate } from "../../../utils/date";
 
 const DocumentDetail: FC<{
-  document: any;
+  document: Composition;
   onClose: () => void;
 }> = ({ onClose, document }) => {
   const [mobile, setMobile] = useState(false);
@@ -16,19 +18,15 @@ const DocumentDetail: FC<{
   return !mobile ? (
     <Dialog onClose={onClose}>
       <div className={`flex column ${styles.documentDetail}`}>
-        <h4>{document.title}</h4>
-        <span>{document.doctor}</span>
-        <p>{document.report}</p>
-        <span>{document.created}</span>
+        <h4>{document.name}</h4>
+        <span>{formatDate(document.timeCreated)}</span>
       </div>
     </Dialog>
   ) : (
     <div className={styles.documentDetailMobile}>
       <div className="flex column">
-        <h4>{document.title}</h4>
-        <span>{document.doctor}</span>
-        <p>{document.report}</p>
-        <span>{document.created}</span>
+        <h4>{document.name}</h4>
+        <span>{formatDate(document.timeCreated)}</span>
       </div>
     </div>
   );

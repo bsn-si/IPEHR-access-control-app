@@ -73,7 +73,7 @@ export async function getServerSideProps(context: any) {
 
 export default function Documents() {
   const [detailModal, setDetailModal] = useState(false);
-  const [selectedDoc, setSelectedDoc] = useState(null);
+  const [selectedDoc, setSelectedDoc] = useState<Composition>();
   const [mobile, setMobile] = useState(false);
   const [compositions, setCompositions] = useState<Composition[]>();
   const [user, setUser] = useState<User>();
@@ -106,9 +106,10 @@ export default function Documents() {
   }, [session]);
 
   useEffect(() => {
-    if (user) {
+    console.log(user);
+    if (user && session?.user?.name) {
       GetCompositions(
-        user.userID,
+        session.user.name,
         (session as any).accessToken,
         user.ehrID
       ).then((compositions) => {
@@ -128,16 +129,16 @@ export default function Documents() {
         showAddBtn={false}
       />
       <div className={styles.content}>
-        {/* {compositions &&
+        {compositions &&
           compositions.map((doc) => (
             <DocumentCard
               doc={doc}
               key={doc.uid}
               onClick={() => selectDocument(doc)}
             />
-          ))} */}
+          ))}
       </div>
-      {detailModal && (
+      {detailModal && selectedDoc && (
         <DocumentDetail
           document={selectedDoc}
           onClose={() => setDetailModal(false)}

@@ -12,7 +12,7 @@ export const GetCompositions = async (
       headers: {
         Authorization: `Bearer ${accessToken}`,
         AuthUserId: userId,
-        EhrSystemId: ehrId,
+        // EhrSystemId: ehrId,
       },
     }
   );

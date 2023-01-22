@@ -20,6 +20,7 @@
     "next-pwa": "^5.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-html5-qrcode-reader": "^1.1.1",
     "typescript": "4.8.4"
   },
   "devDependencies": {
