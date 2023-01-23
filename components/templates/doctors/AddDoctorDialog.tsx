@@ -37,7 +37,6 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [doctorInfo, setDoctorInfo] = useState<User>();
-  const readerRef = useRef("");
 
   const { data: session } = useSession();
 
@@ -147,7 +146,7 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
 
   const mobileStep1 = (
     <div>
-      <div className={styles.qrcontainer} ref={readerRef.current} id="reader" />
+      <div className={styles.qrcontainer} id="reader" />
       <div>
         <span className="text-gray font-w500 text-center">
           To add a new doctor please scan QR code and confirm addition.
