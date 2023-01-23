@@ -9,9 +9,10 @@ import { User } from "../../../models/User";
 import { UserGroup } from "../../../models/UserGroup";
 import { GetUserByCode } from "../../../requests/User";
 import { AddUserToGroup } from "../../../requests/UserGroup";
-import { Html5Qrcode } from "html5-qrcode";
+
 import {
   useHtml5QrCodeScanner,
+  useHtml5QrCode,
   useAvailableDevices,
 } from "react-html5-qrcode-reader";
 
@@ -40,46 +41,38 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
 
   const { data: session } = useSession();
 
-  const { Html5QrcodeScanner } = useHtml5QrCodeScanner(html5QrCodeScannerFile);
-  const { devices, error: device_error } = useAvailableDevices(
-    html5QrCodeScannerFile
-  );
+  const { Html5Qrcode } = useHtml5QrCode(html5QrCodeScannerFile);
 
   useEffect(() => {
     setMobile(isMobile());
+  }, [isMobile]);
 
-    if (mobile && Html5QrcodeScanner) {
-      if (Html5QrcodeScanner) {
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-          "reader",
-          { fps: 10, qrbox: { width: 327, height: 327 } },
-          /* verbose= */ false
-        );
-        html5QrcodeScanner.render(
-          (data: any) => console.log("success ->", data),
-          (err: any) => console.log("err ->", err)
+  useEffect(() => {
+    if (mobile) {
+      if (Html5Qrcode) {
+        let reader = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: { width: 327, height: 327 } };
+        const qrCodeSuccessCallback = async (
+          decodedText: string,
+          decodedResult: any
+        ) => {
+          console.log("SUCCESS", decodedResult, decodedText);
+          await getDoctorInfo(decodedText);
+          reader.stop().then((res: any) => console.log(res));
+        };
+        const qrCodeFailCallback = async (error: string) => {
+          console.log(error);
+          // await reader.stop();
+        };
+        reader.start(
+          { facingMode: "environment" },
+          config,
+          qrCodeSuccessCallback,
+          qrCodeFailCallback
         );
       }
-      // const reader = new Html5Qrcode(readerRef.current);
-      // const config = { fps: 10, qrbox: { width: 327, height: 327 } };
-      // const qrCodeSuccessCallback = async (
-      //   decodedText: string,
-      //   decodedResult: any
-      // ) => {
-      //   await getDoctorInfo(decodedResult);
-      //   await addDoctor();
-      // };
-      // const qrCodeFailCallback = (error: string) => {
-      //   console.log("error");
-      // };
-      // reader.start(
-      //   { facingMode: "environment" },
-      //   config,
-      //   qrCodeSuccessCallback,
-      //   qrCodeFailCallback
-      // );
     }
-  }, [isMobile]);
+  }, [mobile, Html5Qrcode]);
 
   useEffect(() => {
     onChangeStep("Scan QR Code");
@@ -119,7 +112,6 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
         setLoading(false);
       }
     } else {
-      console.log("session not found", session, doctorInfo);
       setLoading(false);
     }
   };
@@ -154,6 +146,25 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
       </div>
     </div>
   );
+
+  const mobileStep2 = (
+    <>
+      <div className={styles.mobileStep2}>
+        <div className={styles.doctorImage} />
+        <div className={`flex column justify-center w100`}>
+          <h4 className={styles["dialog-header"]}>{doctorInfo?.name}</h4>
+          <span className={styles.doctorSubTitle}>{doctorInfo?.address}</span>
+          <p className={styles.doctorText}>{doctorInfo?.description}</p>
+        </div>
+      </div>
+      <Button
+        label="ADD DOCTOR"
+        onClick={() => addDoctor()}
+        loading={loading}
+      />
+      {error && <span className={styles.error}>{error}</span>}
+    </>
+  );
   return !mobile ? (
     <Dialog onClose={onClose}>
       {step === 1 && desktopStep1}
@@ -178,7 +189,10 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
       )}
     </Dialog>
   ) : (
-    <div className={styles.addDoctorMobile}>{step === 1 && mobileStep1}</div>
+    <div className={styles.addDoctorMobile}>
+      {step === 1 && mobileStep1}
+      {step === 2 && mobileStep2}
+    </div>
   );
 };
 

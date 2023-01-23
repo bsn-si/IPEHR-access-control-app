@@ -161,6 +161,7 @@
   left: 0;
   padding: 0 24px 80px 24px;
   margin-top: 80px;
+  width: 100%;
   .qrcontainer {
     height: 327px;
     width: 327px;
@@ -218,4 +219,28 @@
   left: 0;
   background: #ffffff;
   display: flex;
+}
+
+.mobileStep2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  height: calc(100vh - 83px - 56px - 100px);
+
+  + button {
+    width: 100%;
+  }
+
+  .doctorImage {
+    width: 295px;
+    height: 143px;
+    border-radius: 8px;
+    background-image: url("https://via.placeholder.com/295x143.png");
+    margin-bottom: 16px;
+  }
 }
