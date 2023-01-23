@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, use, useRef } from "react";
+import React, { FC, useState, useEffect, useRef } from "react";
 import Button from "../../ui/Button";
 import { Dialog } from "../../ui/Dialog/Dialog";
 import styles from "../../../styles/Doctors.module.scss";
@@ -10,6 +10,10 @@ import { UserGroup } from "../../../models/UserGroup";
 import { GetUserByCode } from "../../../requests/User";
 import { AddUserToGroup } from "../../../requests/UserGroup";
 import { Html5Qrcode } from "html5-qrcode";
+import {
+  useHtml5QrCodeScanner,
+  useAvailableDevices,
+} from "react-html5-qrcode-reader";
 
 interface AddDoctorProps {
   doctorsGroup: UserGroup;
@@ -17,6 +21,8 @@ interface AddDoctorProps {
   onSuccess: (doctor: User) => void;
   onChangeStep: (step: string) => void;
 }
+
+const html5QrCodeScannerFile = "/html5-qrcode.min.js";
 
 const AddDoctorDialog: FC<AddDoctorProps> = ({
   doctorsGroup,
@@ -33,30 +39,46 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
   const [doctorInfo, setDoctorInfo] = useState<User>();
   const readerRef = useRef("");
 
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+
+  const { Html5QrcodeScanner } = useHtml5QrCodeScanner(html5QrCodeScannerFile);
+  const { devices, error: device_error } = useAvailableDevices(
+    html5QrCodeScannerFile
+  );
 
   useEffect(() => {
     setMobile(isMobile());
 
-    if (mobile) {
-      const reader = new Html5Qrcode(readerRef.current);
-      const config = { fps: 10, qrbox: { width: 327, height: 327 } };
-      const qrCodeSuccessCallback = async (
-        decodedText: string,
-        decodedResult: any
-      ) => {
-        await getDoctorInfo(decodedResult);
-        await addDoctor();
-      };
-      const qrCodeFailCallback = (error: string) => {
-        console.log("error");
-      };
-      reader.start(
-        { facingMode: "environment" },
-        config,
-        qrCodeSuccessCallback,
-        qrCodeFailCallback
-      );
+    if (mobile && Html5QrcodeScanner) {
+      if (Html5QrcodeScanner) {
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+          "reader",
+          { fps: 10, qrbox: { width: 327, height: 327 } },
+          /* verbose= */ false
+        );
+        html5QrcodeScanner.render(
+          (data: any) => console.log("success ->", data),
+          (err: any) => console.log("err ->", err)
+        );
+      }
+      // const reader = new Html5Qrcode(readerRef.current);
+      // const config = { fps: 10, qrbox: { width: 327, height: 327 } };
+      // const qrCodeSuccessCallback = async (
+      //   decodedText: string,
+      //   decodedResult: any
+      // ) => {
+      //   await getDoctorInfo(decodedResult);
+      //   await addDoctor();
+      // };
+      // const qrCodeFailCallback = (error: string) => {
+      //   console.log("error");
+      // };
+      // reader.start(
+      //   { facingMode: "environment" },
+      //   config,
+      //   qrCodeSuccessCallback,
+      //   qrCodeFailCallback
+      // );
     }
   }, [isMobile]);
 
@@ -125,7 +147,7 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
 
   const mobileStep1 = (
     <div>
-      <div className={styles.qrcontainer} ref={readerRef.current} />
+      <div className={styles.qrcontainer} ref={readerRef.current} id="reader" />
       <div>
         <span className="text-gray font-w500 text-center">
           To add a new doctor please scan QR code and confirm addition.
