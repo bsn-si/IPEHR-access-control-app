@@ -127,7 +127,7 @@ export default function Doctors() {
             userId={doctor}
             key={doctor}
             onClick={(user) => selectDoctor(user)}
-            accessToken={(session as any).accessToken}
+            accessToken={(session as any)?.accessToken}
             currentUserId={session?.user?.name || ""}
           />
         ))}

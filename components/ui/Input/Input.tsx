@@ -1,26 +1,23 @@
-import React, { FC, useRef, lazy, Suspense } from "react";
+import React, { FC, useRef, lazy, Suspense, memo } from "react";
 import styles from "./Input.module.css";
 
 interface InputProps {
   label: string;
   type?: "text" | "password" | "number";
-  icon?: string;
+  Icon?: React.FC;
   onInput?: (value: any) => void;
 }
 
-const Input: FC<InputProps> = ({ type = "text", label, icon, onInput }) => {
+const Input: FC<InputProps> = ({ type = "text", label, Icon, onInput }) => {
   const ref = useRef<HTMLInputElement>(null);
-  const DynamicIcon = lazy(() => import(`../../icons/${icon}`));
   return (
     <label className={`${styles.container} col`}>
-      <div className="col">
-        <div className="flex relative">
-          {icon && (
-            <Suspense fallback={""}>
-              <div className={styles.iconWrap}>
-                <DynamicIcon />
-              </div>
-            </Suspense>
+      <div className="col h100">
+        <div className="flex relative h100">
+          {Icon && (
+            <div className={styles.iconWrap}>
+              <Icon />
+            </div>
           )}
           <div className="flex col">
             <input
@@ -39,4 +36,4 @@ const Input: FC<InputProps> = ({ type = "text", label, icon, onInput }) => {
   );
 };
 
-export default Input;
+export default memo(Input);

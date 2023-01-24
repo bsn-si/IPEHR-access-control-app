@@ -17,6 +17,7 @@
   display: flex;
   align-items: center;
   margin-right: 16px;
+  width: 13px;
 }
 
 .native:focus + .label {

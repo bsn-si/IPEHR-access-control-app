@@ -6,6 +6,8 @@ import Button from "../components/ui/Button";
 import Input from "../components/ui/Input/Input";
 import styles from "../styles/Login.module.css";
 import { useRouter } from "next/router";
+import LoginIcon from "../components/icons/LoginIcon";
+import LockIcon from "../components/icons/Lock";
 
 export async function getServerSideProps(context: any) {
   return {
@@ -57,14 +59,14 @@ export default function Login() {
               <Input
                 onInput={(value) => setLogin(value)}
                 label="Login"
-                icon="LoginIcon"
+                Icon={LoginIcon}
               />
             </div>
             <div className="flex justify-center mt-md mb-xl">
               <Input
                 onInput={(value) => setPassword(value)}
                 label="Password"
-                icon="Lock"
+                Icon={LockIcon}
                 type="password"
               />
             </div>
