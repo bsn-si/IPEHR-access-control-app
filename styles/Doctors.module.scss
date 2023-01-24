@@ -119,6 +119,8 @@
   background-image: url("https://via.placeholder.com/270x132.png");
   margin-bottom: 16px;
   border-radius: 8px;
+  background: center no-repeat;
+  background-size: contain;
 }
 
 .doctorCard {
@@ -185,7 +187,9 @@
     width: 295px;
     height: 368px;
     border-radius: 8px;
-    background-image: url("https://via.placeholder.com/295x368.png");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 
   .doctorInfoText {
@@ -205,8 +209,10 @@
       width: 295px;
       height: 143px;
       border-radius: 8px;
-      background-image: url("https://via.placeholder.com/295x143.png");
       margin-bottom: 16px;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
     }
   }
 }
@@ -240,7 +246,9 @@
     width: 295px;
     height: 143px;
     border-radius: 8px;
-    background-image: url("https://via.placeholder.com/295x143.png");
     margin-bottom: 16px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
 }

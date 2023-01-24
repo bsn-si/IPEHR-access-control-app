@@ -6,7 +6,7 @@ import { RemoveUserFromGroup } from "../../../requests/UserGroup";
 import { User } from "../../../models/User";
 import useIsMobile from "../../../hooks/useIsMobile";
 
-const AddDoctorDialog: FC<{
+const DoctorInfoDialog: FC<{
   doctor: User;
   groupId: string;
   accessToken: string;
@@ -38,7 +38,10 @@ const AddDoctorDialog: FC<{
 
   const doctorInfo = (
     <div className={styles.doctorInfo}>
-      <div className={styles.doctorImage} />
+      <div
+        className={styles.doctorImage}
+        style={{ backgroundImage: `url(${doctor.pictureURL})` }}
+      />
       <div className={`flex column justify-center ${styles.doctorInfoText}`}>
         <h4 className={styles["dialog-header"]}>
           {doctor.name.replace(/\0/g, "")}
@@ -61,4 +64,4 @@ const AddDoctorDialog: FC<{
   );
 };
 
-export default AddDoctorDialog;
+export default DoctorInfoDialog;

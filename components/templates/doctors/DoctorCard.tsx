@@ -31,7 +31,10 @@ const DoctorCard: FC<DoctorCardProps> = ({
           className={styles.doctorCard}
           onClick={() => (user ? onClick(user) : null)}
         >
-          <div className={styles.doctorPreview} />
+          <div
+            className={styles.doctorPreview}
+            style={{ backgroundImage: `url(${user?.pictureURL})` }}
+          />
           <div>
             <div className={styles.doctorCardHeader}>{user?.name}</div>
             <span className={styles.doctorSubTitle}>{user?.address}</span>

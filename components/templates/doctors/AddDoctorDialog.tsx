@@ -136,6 +136,27 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
     </div>
   );
 
+  const desktopStep2 = (
+    <div className={styles.doctorInfo}>
+      <div
+        className={styles.doctorImage}
+        style={{ backgroundImage: `url(${doctorInfo?.pictureURL})` }}
+      />
+      <div className={`flex column justify-center ${styles.doctorInfoText}`}>
+        <h4 className={styles["dialog-header"]}>{doctorInfo?.name}</h4>
+        <span className={styles.doctorSubTitle}>{doctorInfo?.address}</span>
+        <p className={styles.doctorText}>{doctorInfo?.description}</p>
+        {/* <span>Speaks English, Chinese</span> */}
+        <Button
+          label="ADD DOCTOR"
+          onClick={() => addDoctor()}
+          loading={loading}
+        />
+        {error && <span className={styles.error}>{error}</span>}
+      </div>
+    </div>
+  );
+
   const mobileStep1 = (
     <div>
       <div className={styles.qrcontainer} id="reader" />
@@ -150,7 +171,10 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
   const mobileStep2 = (
     <>
       <div className={styles.mobileStep2}>
-        <div className={styles.doctorImage} />
+        <div
+          className={styles.doctorImage}
+          style={{ backgroundImage: `url(${doctorInfo?.pictureURL})` }}
+        />
         <div className={`flex column justify-center w100`}>
           <h4 className={styles["dialog-header"]}>{doctorInfo?.name}</h4>
           <span className={styles.doctorSubTitle}>{doctorInfo?.address}</span>
@@ -168,25 +192,7 @@ const AddDoctorDialog: FC<AddDoctorProps> = ({
   return !mobile ? (
     <Dialog onClose={onClose}>
       {step === 1 && desktopStep1}
-      {step === 2 && (
-        <div className={styles.doctorInfo}>
-          <div className={styles.doctorImage} />
-          <div
-            className={`flex column justify-center ${styles.doctorInfoText}`}
-          >
-            <h4 className={styles["dialog-header"]}>{doctorInfo?.name}</h4>
-            <span className={styles.doctorSubTitle}>{doctorInfo?.address}</span>
-            <p className={styles.doctorText}>{doctorInfo?.description}</p>
-            {/* <span>Speaks English, Chinese</span> */}
-            <Button
-              label="ADD DOCTOR"
-              onClick={() => addDoctor()}
-              loading={loading}
-            />
-            {error && <span className={styles.error}>{error}</span>}
-          </div>
-        </div>
-      )}
+      {step === 2 && desktopStep2}
     </Dialog>
   ) : (
     <div className={styles.addDoctorMobile}>
