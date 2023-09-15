@@ -11,6 +11,7 @@ const nextConfig = {
   swcMinify: true,
   env: {
     externalApiUrl: "https://gateway.ipehr.org/v1/",
+    ehrSystemId: "sc_bsn_si",
   },
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")],
