@@ -9,7 +9,7 @@ export const GetUserGroups = async (
     headers: {
       Authorization: `Bearer ${accessToken}`,
       AuthUserId: userId,
-      EhrSystemId: process.env.ehrSystemId,
+      EhrSystemId: process.env.ehrSystemId || "",
     },
   });
   if (getGroupsReq.ok) {
@@ -34,7 +34,7 @@ export const AddUserToGroup = async (
       headers: {
         Authorization: `Bearer ${accessToken}`,
         AuthUserId: ownerId,
-        EhrSystemId: process.env.ehrSystemId,
+        EhrSystemId: process.env.ehrSystemId || "",
       },
     }
   );
@@ -54,7 +54,7 @@ export const RemoveUserFromGroup = async (
       headers: {
         Authorization: `Bearer ${accessToken}`,
         AuthUserId: ownerId,
-        EhrSystemId: process.env.ehrSystemId,
+        EhrSystemId: process.env.ehrSystemId || "",
       },
     }
   );
