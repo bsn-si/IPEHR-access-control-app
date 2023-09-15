@@ -53,7 +53,7 @@ export const options: NextAuthOptions = {
           headers: {
             "Content-Type": "application/json",
             AuthUserId: credentials?.userID || "",
-            EhrSystemId: process.env.ehrSystemId
+            EhrSystemId: process.env.ehrSystemId || ""
           },
         });
         const user = await res.json();
