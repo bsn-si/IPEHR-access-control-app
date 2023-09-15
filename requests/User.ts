@@ -18,6 +18,7 @@ export const GetUser = async (
     headers: {
       Authorization: `Bearer ${accessToken}`,
       AuthUserId: currentUserId,
+      EhrSystemId: process.env.ehrSystemId,
     },
   });
   if (res.ok && res.status === 200) return res.json();
